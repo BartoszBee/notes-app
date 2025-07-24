@@ -1,9 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import NoteForm from "./components/NoteForm";
+import SearchInput from "./components/SearchInput";
+import NoteList from "./components/NoteList";
+import ExportCSVButton from "./components/ExportCSVButton";
+import { DocumentTextIcon } from "@heroicons/react/24/outline";
 
-type Note = {
+export type Note = {
   id: number;
   title: string;
   content: string;
@@ -12,19 +17,17 @@ type Note = {
 
 export default function NotesPage() {
   const [notes, setNotes] = useState<Note[]>([]);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [editId, setEditId] = useState<number | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [formState, setFormState] = useState({ title: "", content: "" });
 
   const fetchNotes = async () => {
     try {
-      const res = await fetch('/api/notes');
+      const res = await fetch("/api/notes");
       const data = await res.json();
       setNotes(data);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      toast.error('Błąd ładowania notatek');
+    } catch {
+      toast.error("Błąd ładowania notatek");
     }
   };
 
@@ -32,143 +35,120 @@ export default function NotesPage() {
     fetchNotes();
   }, []);
 
-  const handleSubmit = async () => {
+  const handleAddOrUpdate = async () => {
+    const { title, content } = formState;
     if (!title.trim() || !content.trim()) {
-      toast.error('Tytuł i treść są wymagane');
+      toast.error("Tytuł i treść są wymagane");
       return;
     }
 
     try {
       if (editId !== null) {
         const res = await fetch(`/api/notes/${editId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ title, content }),
         });
         const updated = await res.json();
-        setNotes(prev =>
-          prev.map(note => (note.id === editId ? { ...note, ...updated } : note))
+        setNotes((prev) =>
+          prev.map((note) =>
+            note.id === editId ? { ...note, ...updated } : note
+          )
         );
-        toast.success('Notatka zaktualizowana');
+        toast.success("Notatka zaktualizowana");
         setEditId(null);
       } else {
-        const res = await fetch('/api/notes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch("/api/notes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ title, content }),
         });
         const newNote = await res.json();
-        setNotes(prev => [newNote, ...prev]);
-        toast.success('Notatka dodana');
+        setNotes((prev) => [newNote, ...prev]);
+        toast.success("Notatka dodana");
       }
 
-      setTitle('');
-      setContent('');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      toast.error('Błąd zapisu notatki');
+      setFormState({ title: "", content: "" });
+    } catch {
+      toast.error("Błąd zapisu notatki");
     }
   };
 
   const handleDelete = async (id: number) => {
-    const confirmed = confirm('Czy na pewno chcesz usunąć tę notatkę?');
+    const confirmed = confirm("Czy na pewno chcesz usunąć tę notatkę?");
     if (!confirmed) return;
 
     try {
-      await fetch(`/api/notes/${id}`, { method: 'DELETE' });
-      setNotes(prev => prev.filter(note => note.id !== id));
-      toast.success('Notatka usunięta');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      toast.error('Błąd usuwania notatki');
+      await fetch(`/api/notes/${id}`, { method: "DELETE" });
+      setNotes((prev) => prev.filter((note) => note.id !== id));
+      toast.success("Notatka usunięta");
+    } catch {
+      toast.error("Błąd usuwania notatki");
     }
   };
 
   const handleEdit = (note: Note) => {
     setEditId(note.id);
-    setTitle(note.title);
-    setContent(note.content);
+    setFormState({ title: note.title, content: note.content });
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Notes App</h1>
+    <div className="min-h-screen bg-gray-50 text-gray-900 py-10 px-4">
+      <div className="max-w-3xl mx-auto space-y-10">
+        <h1 className="text-3xl sm:text-4xl font-bold flex items-center justify-center gap-2 text-white bg-zinc-600 w-fit m-auto my-6 px-6 py-3 rounded-2xl shadow-lg">
+          <DocumentTextIcon className="h-8 w-8 text-white" />
+          Notes App
+        </h1>
 
-      <div className="mb-6 space-y-2">
-        <input
-          className="w-full border rounded p-2"
-          placeholder="Tytuł"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-        />
-        <textarea
-          className="w-full border rounded p-2"
-          placeholder="Treść"
-          value={content}
-          onChange={e => setContent(e.target.value)}
-        />
-        <div className="flex gap-2">
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            {editId ? 'Zapisz zmiany' : 'Dodaj notatkę'}
-          </button>
-          {editId && (
-            <button
-              onClick={() => {
-                setEditId(null);
-                setTitle('');
-                setContent('');
-              }}
-              className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-            >
-              Anuluj
-            </button>
-          )}
-        </div>
+        <section className="bg-white rounded-2xl shadow-md p-6 space-y-6 border border-gray-200">
+          <h2 className="text-xl font-semibold">
+            {editId ? "✏️ Edytujesz notatkę" : "➕ Dodaj nową notatkę"}
+          </h2>
+          <NoteForm
+            title={formState.title}
+            content={formState.content}
+            onChange={setFormState}
+            onSubmit={handleAddOrUpdate}
+            isEditing={editId !== null}
+            onCancel={() => {
+              setEditId(null);
+              setFormState({ title: "", content: "" });
+            }}
+          />
+        </section>
+
+        <section className="space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex-1">
+              <h2 className="text-lg font-medium mb-2">🔍 Wyszukaj notatki</h2>
+              <SearchInput value={searchTerm} onChange={setSearchTerm} />
+            </div>
+            <div>
+              <ExportCSVButton
+                notes={notes.filter(
+                  (note) =>
+                    note.title
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase()) ||
+                    note.content
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                )}
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="text-xl font-semibold">📋 Twoje notatki</h2>
+          <NoteList
+            notes={notes}
+            searchTerm={searchTerm}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </section>
       </div>
-
-      <div className="mb-4">
-        <input
-          type="text"
-          className="w-full border rounded p-2"
-          placeholder="Szukaj notatki..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-
-      <ul className="space-y-4">
-        {notes
-          .filter(note =>
-            note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            note.content.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-          .map(note => (
-            <li key={note.id} className="border p-4 rounded shadow">
-              <h2 className="font-semibold">{note.title}</h2>
-              <p className="text-gray-700 whitespace-pre-wrap">{note.content}</p>
-              <p className="text-sm text-gray-500 mt-2">
-                {new Date(note.createdAt).toLocaleString()}
-              </p>
-              <div className="flex gap-4 mt-2">
-                <button
-                  onClick={() => handleEdit(note)}
-                  className="text-sm text-blue-600 hover:underline"
-                >
-                  Edytuj
-                </button>
-                <button
-                  onClick={() => handleDelete(note.id)}
-                  className="text-sm text-red-600 hover:underline"
-                >
-                  Usuń
-                </button>
-              </div>
-            </li>
-          ))}
-      </ul>
     </div>
   );
 }
