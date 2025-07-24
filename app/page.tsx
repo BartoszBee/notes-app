@@ -99,6 +99,11 @@ export default function NotesPage() {
           <DocumentTextIcon className="h-8 w-8 text-white" />
           Notes App
         </h1>
+        <p className="text-center text-sm text-zinc-600 bg-red-50 border border-red-400 w-fit m-auto mb-4 px-4 py-2 rounded-md">
+          ⚠️ Aplikacja działa tylko lokalnie – dane{" "}
+          <span className="font-semibold">nie są trwale zapisywane</span> np. na
+          Vercel.
+        </p>
 
         <section className="bg-white rounded-2xl shadow-md p-6 space-y-6 border border-gray-200">
           <h2 className="text-xl font-semibold">
