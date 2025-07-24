@@ -1,21 +1,23 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 
-export async function DELETE(
-  _: Request,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params;
+function getIdFromUrl(req: Request): string {
+  const url = new URL(req.url);
+  const parts = url.pathname.split("/");
+  return parts[parts.length - 1]; // ostatni fragment to id
+}
+
+export async function DELETE(req: Request) {
+  const id = getIdFromUrl(req);
+
   const stmt = db.prepare("DELETE FROM notes WHERE id = ?");
   stmt.run(id);
+
   return NextResponse.json({ success: true });
 }
 
-export async function PUT(
-  req: Request,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params;
+export async function PUT(req: Request) {
+  const id = getIdFromUrl(req);
   const { title, content } = await req.json();
 
   const stmt = db.prepare(
