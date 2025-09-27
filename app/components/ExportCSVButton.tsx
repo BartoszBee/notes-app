@@ -30,7 +30,7 @@ export default function ExportCSVButton({ notes }: Props) {
   return (
     <button
       onClick={exportCSV}
-      className="mb-6 mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+      className="mb-6 mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer"
     >
       Eksportuj do CSV
     </button>
