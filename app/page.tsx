@@ -1,12 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "react-hot-toast";
 import NoteForm from "./components/NoteForm";
 import SearchInput from "./components/SearchInput";
 import NoteList from "./components/NoteList";
 import ExportCSVButton from "./components/ExportCSVButton";
-import { DocumentTextIcon } from "@heroicons/react/24/outline";
+import {
+  DocumentTextIcon,
+  ExclamationCircleIcon,
+  PencilIcon,
+  PlusIcon,
+  MagnifyingGlassIcon
+} from "@heroicons/react/24/outline";
 
 export type Note = {
   id: number;
@@ -20,6 +26,8 @@ export default function NotesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editId, setEditId] = useState<number | null>(null);
   const [formState, setFormState] = useState({ title: "", content: "" });
+
+  const sekcjaRef = useRef<HTMLElement | null>(null);
 
   const fetchNotes = async () => {
     try {
@@ -74,6 +82,10 @@ export default function NotesPage() {
     }
   };
 
+  const handleScroll = () => {
+    sekcjaRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const handleDelete = async (id: number) => {
     const confirmed = confirm("Czy na pewno chcesz usunąć tę notatkę?");
     if (!confirmed) return;
@@ -90,6 +102,7 @@ export default function NotesPage() {
   const handleEdit = (note: Note) => {
     setEditId(note.id);
     setFormState({ title: note.title, content: note.content });
+    handleScroll();
   };
 
   return (
@@ -99,15 +112,28 @@ export default function NotesPage() {
           <DocumentTextIcon className="h-8 w-8 text-white" />
           Notes App
         </h1>
-        <p className="text-center text-sm text-zinc-600 bg-red-50 border border-red-400 w-fit m-auto mb-4 px-4 py-2 rounded-md">
-          ⚠️ Aplikacja działa tylko lokalnie – dane{" "}
-          <span className="font-semibold">nie są trwale zapisywane</span> np. na
-          Vercel.
+        <p className="text-center text-sm text-red-600  border flex items-center border-red-600 w-fit m-auto mb-4 px-4 py-2 rounded-md">
+          <ExclamationCircleIcon className="h-8 w-8 text-red-600" /> Aplikacja
+          działa tylko lokalnie – dane nie są trwale zapisywane np. na Vercel. (
+          Lokalna baza danych SQLite )
         </p>
 
-        <section className="bg-white rounded-2xl shadow-md p-6 space-y-6 border border-gray-200">
-          <h2 className="text-xl font-semibold">
-            {editId ? "✏️ Edytujesz notatkę" : "➕ Dodaj nową notatkę"}
+        <section
+          className="bg-white rounded-2xl shadow-md p-6 space-y-6 border border-gray-200"
+          ref={sekcjaRef}
+        >
+          <h2 className="text-xl font-semibold flex gap-3 items-center">
+            {editId ? (
+              <>
+                <PencilIcon className="h-6 w-6 text-red-600" />
+                Edytujesz notatkę
+              </>
+            ) : (
+              <>
+                <PlusIcon className="h-9 w-9 text-blue-600" />
+                Dodaj nową notatkę
+              </>
+            )}
           </h2>
           <NoteForm
             title={formState.title}
@@ -125,7 +151,7 @@ export default function NotesPage() {
         <section className="space-y-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex-1">
-              <h2 className="text-lg font-medium mb-2">🔍 Wyszukaj notatki</h2>
+              <h2 className="text-lg font-medium mb-2 flex gap-3 items-center"><MagnifyingGlassIcon className="h-5 w-5 text-gray-500" /> Wyszukaj notatki</h2>
               <SearchInput value={searchTerm} onChange={setSearchTerm} />
             </div>
             <div>
@@ -145,7 +171,7 @@ export default function NotesPage() {
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-xl font-semibold">📋 Twoje notatki</h2>
+          <h2 className="text-xl font-semibold flex gap-3 items-center"><DocumentTextIcon className="h-6 w-6 text-blue-600" /> Twoje notatki</h2>
           <NoteList
             notes={notes}
             searchTerm={searchTerm}

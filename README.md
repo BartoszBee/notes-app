@@ -15,19 +15,5 @@ Prosta aplikacja do tworzenia i zarządzania notatkami z lokalną bazą danych S
 - 💽 Lokalna baza danych SQLite (`better-sqlite3`)
 - 📦 Prototyp działający lokalnie (nieprzystosowany do hostingu na Vercel)
 
----
 
-## 📸 Zrzut ekranu
-
-> *(Tu wstaw zrzut ekranu, np. `preview.png` z listą notatek i formularzem)*
-
----
-
-## 🚀 Uruchomienie lokalne
-
-### 1. Klonowanie repo
-
-```bash
-git clone https://github.com/BartoszBee/notes-app.git
-cd notes-app
 

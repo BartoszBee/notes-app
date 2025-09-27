@@ -28,7 +28,7 @@ export default function NoteItem({ note, onEdit, onDelete }: Props) {
       <div className="flex gap-4 mt-2">
         <button
           onClick={() => onEdit(note)}
-          className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline"
+          className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline cursor-pointer"
         >
           <PencilIcon className="h-4 w-4" />
           Edytuj
@@ -36,7 +36,7 @@ export default function NoteItem({ note, onEdit, onDelete }: Props) {
 
         <button
           onClick={() => onDelete(note.id)}
-          className="inline-flex items-center gap-1 text-sm text-red-600 hover:underline"
+          className="inline-flex items-center gap-1 text-sm text-red-600 hover:underline cursor-pointer"
         >
           <TrashIcon className="h-4 w-4" />
           Usuń
