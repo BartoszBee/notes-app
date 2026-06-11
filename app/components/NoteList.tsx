@@ -30,7 +30,7 @@ export default function NoteList({ notes, searchTerm, onEdit, onDelete }: Props)
     return (
       <div className="flex flex-col items-center justify-center py-16 text-gray-300 space-y-2">
         <MagnifyingGlassIcon className="h-12 w-12" />
-        <p className="text-sm font-medium text-gray-400">Brak wyników dla „{searchTerm}"</p>
+        <p className="text-sm font-medium text-gray-400">Brak wyników dla &bdquo;{searchTerm}&rdquo;</p>
         <p className="text-xs text-gray-300">Spróbuj innej frazy</p>
       </div>
     );
