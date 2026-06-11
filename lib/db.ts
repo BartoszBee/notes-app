@@ -1,16 +1,14 @@
-// lib/db.ts
-import Database from "better-sqlite3";
-import { join } from "path";
+import { neon } from "@neondatabase/serverless";
 
-const db = new Database(join(process.cwd(), "notes.db"));
+export const sql = neon(process.env.DATABASE_URL!);
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS notes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    content TEXT NOT NULL,
-    createdAt TEXT NOT NULL
-  );
-`);
-
-export default db;
+export async function initDb() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS notes (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      content TEXT NOT NULL,
+      "createdAt" TEXT NOT NULL
+    )
+  `;
+}

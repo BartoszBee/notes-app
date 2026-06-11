@@ -1,18 +1,15 @@
 import { NextResponse } from "next/server";
-import db from "@/lib/db";
+import { sql } from "@/lib/db";
 
 function getIdFromUrl(req: Request): string {
   const url = new URL(req.url);
   const parts = url.pathname.split("/");
-  return parts[parts.length - 1]; // ostatni fragment to id
+  return parts[parts.length - 1];
 }
 
 export async function DELETE(req: Request) {
   const id = getIdFromUrl(req);
-
-  const stmt = db.prepare("DELETE FROM notes WHERE id = ?");
-  stmt.run(id);
-
+  await sql`DELETE FROM notes WHERE id = ${id}`;
   return NextResponse.json({ success: true });
 }
 
@@ -20,10 +17,11 @@ export async function PUT(req: Request) {
   const id = getIdFromUrl(req);
   const { title, content } = await req.json();
 
-  const stmt = db.prepare(
-    "UPDATE notes SET title = ?, content = ? WHERE id = ?"
-  );
-  stmt.run(title, content, id);
+  const result = await sql`
+    UPDATE notes SET title = ${title}, content = ${content}
+    WHERE id = ${id}
+    RETURNING *
+  `;
 
-  return NextResponse.json({ id, title, content });
+  return NextResponse.json(result[0]);
 }
