@@ -8,10 +8,9 @@ import NoteList from "./components/NoteList";
 import ExportCSVButton from "./components/ExportCSVButton";
 import {
   DocumentTextIcon,
-  ExclamationCircleIcon,
-  PencilIcon,
-  PlusIcon,
-  MagnifyingGlassIcon
+  ExclamationTriangleIcon,
+  PencilSquareIcon,
+  PlusCircleIcon,
 } from "@heroicons/react/24/outline";
 
 export type Note = {
@@ -82,14 +81,7 @@ export default function NotesPage() {
     }
   };
 
-  const handleScroll = () => {
-    sekcjaRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   const handleDelete = async (id: number) => {
-    const confirmed = confirm("Czy na pewno chcesz usunąć tę notatkę?");
-    if (!confirmed) return;
-
     try {
       await fetch(`/api/notes/${id}`, { method: "DELETE" });
       setNotes((prev) => prev.filter((note) => note.id !== id));
@@ -102,36 +94,38 @@ export default function NotesPage() {
   const handleEdit = (note: Note) => {
     setEditId(note.id);
     setFormState({ title: note.title, content: note.content });
-    handleScroll();
+    sekcjaRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 py-10 px-4">
-      <div className="max-w-3xl mx-auto space-y-10">
-        <h1 className="text-3xl sm:text-4xl font-bold flex items-center justify-center gap-2 text-white bg-zinc-600 w-fit m-auto my-6 px-6 py-3 rounded-2xl shadow-lg">
-          <DocumentTextIcon className="h-8 w-8 text-white" />
-          Notes App
-        </h1>
-        <p className="text-center text-sm text-red-600  border flex items-center border-red-600 w-fit m-auto mb-4 px-4 py-2 rounded-md">
-          <ExclamationCircleIcon className="h-8 w-8 text-red-600" /> Aplikacja
-          działa tylko lokalnie – dane nie są trwale zapisywane np. na Vercel. (
-          Lokalna baza danych SQLite )
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 py-12 px-4">
+      <div className="max-w-2xl mx-auto space-y-8">
+
+        <header className="text-center space-y-3">
+          <div className="flex items-center justify-center gap-3">
+            <DocumentTextIcon className="h-7 w-7 text-indigo-500" />
+            <h1 className="text-3xl font-bold tracking-tight text-indigo-600">Notes App</h1>
+          </div>
+          <div className="flex items-center gap-2 text-red-500 bg-red-50 border-red-500 text-xs rounded-xl px-4 py-2 w-fit mx-auto">
+            <ExclamationTriangleIcon className="h-4 w-4 shrink-0" />
+            <span>Lokalna baza SQLite — dane nie są trwałe na Vercel</span>
+          </div>
+        </header>
 
         <section
-          className="bg-white rounded-2xl shadow-md p-6 space-y-6 border border-gray-200"
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
           ref={sekcjaRef}
         >
-          <h2 className="text-xl font-semibold flex gap-3 items-center">
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2 mb-5">
             {editId ? (
               <>
-                <PencilIcon className="h-6 w-6 text-red-600" />
+                <PencilSquareIcon className="h-4 w-4 text-indigo-500" />
                 Edytujesz notatkę
               </>
             ) : (
               <>
-                <PlusIcon className="h-9 w-9 text-blue-600" />
-                Dodaj nową notatkę
+                <PlusCircleIcon className="h-4 w-4 text-indigo-500" />
+                Nowa notatka
               </>
             )}
           </h2>
@@ -148,30 +142,37 @@ export default function NotesPage() {
           />
         </section>
 
-        <section className="space-y-4">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex-1">
-              <h2 className="text-lg font-medium mb-2 flex gap-3 items-center"><MagnifyingGlassIcon className="h-5 w-5 text-gray-500" /> Wyszukaj notatki</h2>
-              <SearchInput value={searchTerm} onChange={setSearchTerm} />
-            </div>
-            <div>
-              <ExportCSVButton
-                notes={notes.filter(
-                  (note) =>
-                    note.title
-                      .toLowerCase()
-                      .includes(searchTerm.toLowerCase()) ||
-                    note.content
-                      .toLowerCase()
-                      .includes(searchTerm.toLowerCase())
-                )}
-              />
-            </div>
+        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+          <div className="flex-1 w-full">
+            <SearchInput value={searchTerm} onChange={setSearchTerm} />
           </div>
-        </section>
+          <ExportCSVButton
+            notes={notes.filter(
+              (note) =>
+                note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                note.content.toLowerCase().includes(searchTerm.toLowerCase())
+            )}
+          />
+        </div>
 
-        <section className="space-y-2">
-          <h2 className="text-xl font-semibold flex gap-3 items-center"><DocumentTextIcon className="h-6 w-6 text-blue-600" /> Twoje notatki</h2>
+        <section>
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2 mb-4">
+            <DocumentTextIcon className="h-4 w-4" />
+            Twoje notatki
+            {notes.length > 0 && !searchTerm && (
+              <span className="bg-indigo-100 text-indigo-600 text-xs px-2 py-0.5 rounded-full font-semibold">
+                {notes.length}
+              </span>
+            )}
+            {searchTerm && (
+              <span className="bg-indigo-600 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                {notes.filter(n =>
+                  n.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  n.content.toLowerCase().includes(searchTerm.toLowerCase())
+                ).length} z {notes.length}
+              </span>
+            )}
+          </h2>
           <NoteList
             notes={notes}
             searchTerm={searchTerm}
@@ -179,6 +180,7 @@ export default function NotesPage() {
             onDelete={handleDelete}
           />
         </section>
+
       </div>
     </div>
   );

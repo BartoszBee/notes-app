@@ -16,30 +16,30 @@ export default function NoteForm({
   onCancel,
 }: Props) {
   return (
-    <div className="mb-6 space-y-2">
+    <div className="space-y-4">
       <input
-        className="w-full border rounded p-2"
-        placeholder="Tytuł"
+        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+        placeholder="Tytuł notatki"
         value={title}
         onChange={(e) => onChange({ title: e.target.value, content })}
       />
       <textarea
-        className="w-full border rounded p-2"
-        placeholder="Treść"
+        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition min-h-[130px] resize-y"
+        placeholder="Treść notatki..."
         value={content}
         onChange={(e) => onChange({ title, content: e.target.value })}
       />
-      <div className="flex gap-2">
+      <div className="flex gap-3">
         <button
           onClick={onSubmit}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
+          className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-indigo-700 active:scale-95 transition-all cursor-pointer"
         >
-          {isEditing ? 'Zapisz zmiany' : 'Dodaj notatkę'}
+          {isEditing ? "Zapisz zmiany" : "Dodaj notatkę"}
         </button>
         {isEditing && (
           <button
             onClick={onCancel}
-            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 cursor-pointer"
+            className="bg-gray-100 text-gray-700 px-6 py-2.5 rounded-xl font-medium hover:bg-gray-200 active:scale-95 transition-all cursor-pointer"
           >
             Anuluj
           </button>

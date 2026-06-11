@@ -1,3 +1,4 @@
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { Note } from "../page";
 
 type Props = {
@@ -30,9 +31,11 @@ export default function ExportCSVButton({ notes }: Props) {
   return (
     <button
       onClick={exportCSV}
-      className="mb-6 mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer"
+      disabled={!notes.length}
+      className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 font-medium px-4 py-2.5 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap"
     >
-      Eksportuj do CSV
+      <ArrowDownTrayIcon className="h-4 w-4" />
+      Eksportuj CSV
     </button>
   );
 }

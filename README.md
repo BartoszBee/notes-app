@@ -1,19 +1,43 @@
-# 📝 Notes App
+# Notes App
 
-Prosta aplikacja do tworzenia i zarządzania notatkami z lokalną bazą danych SQLite. Zbudowana w Next.js (App Router), z podziałem na komponenty i stylowana za pomocą Tailwind CSS.
+Aplikacja do tworzenia i zarządzania notatkami zbudowana w Next.js 15 (App Router). Dane przechowywane lokalnie w bazie SQLite.
 
----
+## Funkcje
 
-## ✨ Funkcje
+- Dodawanie, edytowanie i usuwanie notatek
+- Inline potwierdzenie usunięcia (bez okien przeglądarki)
+- Wyszukiwanie notatek w czasie rzeczywistym z licznikiem wyników
+- Eksport widocznych notatek do pliku CSV
+- Powiadomienia o wyniku operacji (react-hot-toast)
 
-- ✅ Dodawanie, edycja i usuwanie notatek
-- 🔍 Wyszukiwanie notatek w czasie rzeczywistym
-- 📤 Eksport notatek do pliku CSV
-- 🧱 Podział UI na komponenty
-- 🖼 Ikony Heroicons dla akcji i nagłówków
-- 🔔 Powiadomienia (react-hot-toast)
-- 💽 Lokalna baza danych SQLite (`better-sqlite3`)
-- 📦 Prototyp działający lokalnie (nieprzystosowany do hostingu na Vercel)
+## Stack
 
+- **Next.js 15** — App Router, API Routes (server-side)
+- **React 19** — komponenty klienckie
+- **TypeScript**
+- **Tailwind CSS v4**
+- **better-sqlite3** — lokalna baza SQLite
+- **Heroicons** — ikony
 
+## Uruchomienie lokalne
 
+```bash
+npm install
+npm run dev
+```
+
+Aplikacja dostępna pod adresem `http://localhost:3000`.
+
+> **Uwaga:** baza danych SQLite działa tylko lokalnie.
+
+## Struktura
+
+```
+app/
+├── api/notes/          # API Routes (GET, POST, PUT, DELETE)
+├── components/         # NoteForm, NoteList, NoteItem, SearchInput, ExportCSVButton
+├── page.tsx            # główna strona (logika stanu)
+└── layout.tsx
+lib/
+└── db.ts               # inicjalizacja bazy SQLite
+```
