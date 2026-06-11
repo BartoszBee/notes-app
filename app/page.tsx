@@ -8,7 +8,6 @@ import NoteList from "./components/NoteList";
 import ExportCSVButton from "./components/ExportCSVButton";
 import {
   DocumentTextIcon,
-  ExclamationTriangleIcon,
   PencilSquareIcon,
   PlusCircleIcon,
 } from "@heroicons/react/24/outline";
@@ -105,10 +104,6 @@ export default function NotesPage() {
           <div className="flex items-center justify-center gap-3">
             <DocumentTextIcon className="h-7 w-7 text-indigo-500" />
             <h1 className="text-3xl font-bold tracking-tight text-indigo-600">Notes App</h1>
-          </div>
-          <div className="flex items-center gap-2 text-red-500 bg-red-50 border-red-500 text-xs rounded-xl px-4 py-2 w-fit mx-auto">
-            <ExclamationTriangleIcon className="h-4 w-4 shrink-0" />
-            <span>Lokalna baza SQLite — dane nie są trwałe na Vercel</span>
           </div>
         </header>
 

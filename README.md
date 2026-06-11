@@ -1,34 +1,41 @@
 # Notes App
 
-Aplikacja do tworzenia i zarządzania notatkami zbudowana w Next.js 15 (App Router). Dane przechowywane lokalnie w bazie SQLite.
+Aplikacja do tworzenia i zarządzania notatkami zbudowana w Next.js 16 (App Router). Dane przechowywane w chmurze — PostgreSQL na Neon.
 
 ## Funkcje
 
 - Dodawanie, edytowanie i usuwanie notatek
-- Inline potwierdzenie usunięcia (bez okien przeglądarki)
+- Inline potwierdzenie usunięcia
 - Wyszukiwanie notatek w czasie rzeczywistym z licznikiem wyników
 - Eksport widocznych notatek do pliku CSV
 - Powiadomienia o wyniku operacji (react-hot-toast)
 
 ## Stack
 
-- **Next.js 15** — App Router, API Routes (server-side)
+- **Next.js 16** — App Router, API Routes (server-side)
 - **React 19** — komponenty klienckie
 - **TypeScript**
 - **Tailwind CSS v4**
-- **better-sqlite3** — lokalna baza SQLite
+- **Neon** — PostgreSQL w chmurze
 - **Heroicons** — ikony
 
 ## Uruchomienie lokalne
 
 ```bash
 npm install
+```
+
+Utwórz plik `.env.local` z connection stringiem do bazy:
+
+```
+DATABASE_URL=postgresql://...
+```
+
+```bash
 npm run dev
 ```
 
 Aplikacja dostępna pod adresem `http://localhost:3000`.
-
-> **Uwaga:** baza danych SQLite działa tylko lokalnie.
 
 ## Struktura
 
@@ -39,5 +46,5 @@ app/
 ├── page.tsx            # główna strona (logika stanu)
 └── layout.tsx
 lib/
-└── db.ts               # inicjalizacja bazy SQLite
+└── db.ts               # klient Neon PostgreSQL
 ```
